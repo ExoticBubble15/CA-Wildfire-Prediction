@@ -1,0 +1,8 @@
+3/5
+- updated project plan according to TA feedback
+- added CZ2018 and CZ2022 weather data
+- added fire csv data
+
+TODO
+- decide on whether to use CZ2018 or CZ2022 weather data
+- being processing/cleaning/modeling data
