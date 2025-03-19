@@ -6,3 +6,19 @@
 TODO
 - decide on whether to use CZ2018 or CZ2022 weather data
 - being processing/cleaning/modeling data
+
+
+3/19
+- using all weather data from 2014-2025 (fire data mainly begins mid 2013 so round up to 2014)
+- wrote and executed scripts for processing fire and weather data
+
+NOTES
+- the 'process-weather-data.py' script mimics the 'Daily' sheet of the 'Fin4toExcel.xlsm' file for each .FIN4 file per city per year
+- ^ doesnt produce the 100% exact same results, but quite close (as far as i can tell), might be due to rounding differences
+- started way too late rip
+- omega fatty commit
+
+TODO
+- filter fire/weather data to only include common cities (natural join on city kinda): should cut down by a lot (hopefully not too much)
+- consider week long data entries or similar if still too long (?)
+- being model construction
