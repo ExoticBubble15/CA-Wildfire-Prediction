@@ -7,13 +7,13 @@ TODO
 - decide on whether to use CZ2018 or CZ2022 weather data
 - being processing/cleaning/modeling data
 
-
+-------------
 3/19
 - using all weather data from 2014-2025 (fire data mainly begins mid 2013 so round up to 2014)
 - wrote and executed scripts for processing fire and weather data
 
 NOTES
-- the 'process-weather-data.py' script mimics the 'Daily' sheet of the 'Fin4toExcel.xlsm' file for each .FIN4 file per city per year
+- the 'process-weather-data.py' script mimics the 'Daily' sheet of the 'Fin4toExcel.xlsm' file for each FIN4 file per city per year
 - ^ doesnt produce the 100% exact same results, but quite close (as far as i can tell), might be due to rounding differences
 - started way too late rip
 - omega fatty commit
@@ -22,3 +22,105 @@ TODO
 - filter fire/weather data to only include common cities (natural join on city kinda): should cut down by a lot (hopefully not too much)
 - consider week long data entries or similar if still too long (?)
 - being model construction
+
+-------------
+3/19 (no commit)
+- corrected script for processing weather data (includes 12-31), hopefully the exact same as 'Fin4toExcel.xlsm'
+- deleted raw data from repo, moved to google drive instead (https://drive.google.com/drive/folders/1D4q_7aPc9mx8MtHmdEg1-FQKdTX9w-JH?usp=sharing)
+
+NOTES
+- 4am coding great idea to put full raw dataset in repo xdd
+- class just covered classification, looks to be the main point of this proj
+
+TODO
+- further process data (weather LEFT OUTER JOIN fire (?))
+- divide into training/testing: determine based off of amount of fire data after join
+- think about how to modify readme for midterm report
+- model with tsne, more stuff (tbd)
+- implement classification
+
+-------------
+3/20
+- corrected fire script to omit fires with 0 acres burned
+- corrected weather script to add double digit days/months when applicable
+- created dbs to run SQL
+- created combined, training, validation, and testing data
+- ^ REMOVE ALL 2025 DATA FROM TESTING, UPDATE EVERYTHING ACCORDINGLY (look at NOTES + TODO)
+
+NOTES
+- initial panic bc LEFT OUTER JOIN only produced 14 rows
+- ^ bc weather used single digit months/days, fire always uses double; fixed
+- data split is approx 70/15/15: training = 2014-2020 (186 fires); validation = 2021-2023 (37 fires); testing = 2024-2025 (38 fires)
+- likely/might have to filter validation and testing data to only include cities in testing data!
+- FAKE 2025 DATA: FIX URGENTLY (just wanna get this commit in)
+
+SQL QUERIES
+[on complete-weather-fire.db]
+-- gets cities that appear in both data sets, and how many fires for each (result: 75 rows/cities)
+SELECT city, COUNT(city)
+FROM "complete-fire-data" F
+WHERE F.city IN (SELECT city FROM "complete-weather-data")
+GROUP BY city
+
+-- sums the amount of fires where city appears in both data sets (result: 287)
+SELECT SUM("COUNT(city)")
+FROM
+(SELECT city, COUNT(city)
+FROM "complete-fire-data" F
+WHERE F.city IN (SELECT city FROM "complete-weather-data")
+GROUP BY city)
+
+-- gets cities and how many of its fires have weather data for start date (result: 66 rows/cities)
+SELECT DISTINCT(W.city), COUNT(W.city)
+FROM "complete-weather-data" W, "complete-fire-data" F
+ON W.city = F.city AND W.date = F.start_date
+GROUP BY W.city
+
+-- combination weather, fire data for all fires where weather data exists for its start date and city (result: 261 rows/fires)
+-- 261 vs 287 difference because for some fires, city data for its start date doesnt exists
+SELECT *
+FROM "complete-weather-data" W, "complete-fire-data" F
+ON W.city = F.city AND W.date = F.start_date
+
+-- for each fire: if weather data exists for its city and start date: add all city weather data to output (result: 281958 rows)
+-- orders by oldest weather data first, then cities in abc order
+-- RESULT SHOULD BE FINAL COMBINATION DATA FOR TRAINING/VALIDATION/TESTING (exported to combined-weater-fire)
+SELECT *
+FROM "complete-weather-data" W LEFT OUTER JOIN "complete-fire-data" F
+ON W.city = F.city AND W.date = F.start_date
+WHERE W.city IN
+(-- cities with weather data for fire start
+SELECT W.city
+FROM "complete-weather-data" W, "complete-fire-data" F
+ON W.city = F.city AND W.date = F.start_date
+GROUP BY W.city)
+ORDER BY date ASC, city ASC
+
+[on combined-weather-fire.db]
+-- gets how many fires per year (result: 12 rows = 12 years of data)
+SELECT SUBSTR(date, -4), COUNT(*)
+FROM "combined-weather-fire"
+WHERE fire_name IS NOT NULL
+GROUP BY SUBSTR(date, -4)
+
+-- generates training data: [2014, 2020], 186 fires (result: 164728 rows)
+SELECT *
+FROM "combined-weather-fire"
+WHERE CAST(SUBSTR(date, -4) AS int) < 2021
+
+-- generates validation data: [2021, 2023], 37 fires (result: 70811 rows)
+SELECT *
+FROM "combined-weather-fire"
+WHERE CAST(SUBSTR(date, -4) AS int) > 2020 AND CAST(SUBSTR(date, -4) AS int) < 2024
+
+-- generates testing data: [2024, 2025], 38 fires (result: 46419 rows)
+SELECT *
+FROM "combined-weather-fire"
+WHERE CAST(SUBSTR(date, -4) AS int) >= 2024
+
+TODO
+- URGENT: JUST NOTICED THERES FAKE DATA FOR ALL OF 2025: OMIT ENTIRE YEAR PROBABLY
+- LIKELY: ONLY INCLUDE CITIES IN VALIDATION/TESTING THAT EXIST IN TRAINING (UPDATE EVERYTHING ACCORDINGLY, hopefully doesnt fuck everything up too much)
+- modeling/visualization
+- update README for midterm report
+- waiting for lecture/lab to cover prediction portion
