@@ -55,68 +55,8 @@ NOTES
 - FAKE 2025 DATA: FIX URGENTLY (just wanna get this commit in)
 
 SQL QUERIES
-[on complete-weather-fire.db]
--- gets cities that appear in both data sets, and how many fires for each (result: 75 rows/cities)
-SELECT city, COUNT(city)
-FROM "complete-fire-data" F
-WHERE F.city IN (SELECT city FROM "complete-weather-data")
-GROUP BY city
-
--- sums the amount of fires where city appears in both data sets (result: 287)
-SELECT SUM("COUNT(city)")
-FROM
-(SELECT city, COUNT(city)
-FROM "complete-fire-data" F
-WHERE F.city IN (SELECT city FROM "complete-weather-data")
-GROUP BY city)
-
--- gets cities and how many of its fires have weather data for start date (result: 66 rows/cities)
-SELECT DISTINCT(W.city), COUNT(W.city)
-FROM "complete-weather-data" W, "complete-fire-data" F
-ON W.city = F.city AND W.date = F.start_date
-GROUP BY W.city
-
--- combination weather, fire data for all fires where weather data exists for its start date and city (result: 261 rows/fires)
--- 261 vs 287 difference because for some fires, city data for its start date doesnt exists
-SELECT *
-FROM "complete-weather-data" W, "complete-fire-data" F
-ON W.city = F.city AND W.date = F.start_date
-
--- for each fire: if weather data exists for its city and start date: add all city weather data to output (result: 281958 rows)
--- orders by oldest weather data first, then cities in abc order
--- RESULT SHOULD BE FINAL COMBINATION DATA FOR TRAINING/VALIDATION/TESTING (exported to combined-weater-fire)
-SELECT *
-FROM "complete-weather-data" W LEFT OUTER JOIN "complete-fire-data" F
-ON W.city = F.city AND W.date = F.start_date
-WHERE W.city IN
-(-- cities with weather data for fire start
-SELECT W.city
-FROM "complete-weather-data" W, "complete-fire-data" F
-ON W.city = F.city AND W.date = F.start_date
-GROUP BY W.city)
-ORDER BY date ASC, city ASC
-
-[on combined-weather-fire.db]
--- gets how many fires per year (result: 12 rows = 12 years of data)
-SELECT SUBSTR(date, -4), COUNT(*)
-FROM "combined-weather-fire"
-WHERE fire_name IS NOT NULL
-GROUP BY SUBSTR(date, -4)
-
--- generates training data: [2014, 2020], 186 fires (result: 164728 rows)
-SELECT *
-FROM "combined-weather-fire"
-WHERE CAST(SUBSTR(date, -4) AS int) < 2021
-
--- generates validation data: [2021, 2023], 37 fires (result: 70811 rows)
-SELECT *
-FROM "combined-weather-fire"
-WHERE CAST(SUBSTR(date, -4) AS int) > 2020 AND CAST(SUBSTR(date, -4) AS int) < 2024
-
--- generates testing data: [2024, 2025], 38 fires (result: 46419 rows)
-SELECT *
-FROM "combined-weather-fire"
-WHERE CAST(SUBSTR(date, -4) AS int) >= 2024
+- no longer matter since data has been updated
+- see diff for previously used queries
 
 TODO
 - URGENT: JUST NOTICED THERES FAKE DATA FOR ALL OF 2025: OMIT ENTIRE YEAR PROBABLY
@@ -124,3 +64,16 @@ TODO
 - modeling/visualization
 - update README for midterm report
 - waiting for lecture/lab to cover prediction portion
+
+-------------
+3/22-3/28
+- data fully cleaned and partitioned
+- ^ see sql-queries.txt for details
+
+NOTES
+- consider feature engineering (aggregiate totals over a week/month/6months/year/etc, change against average, etc)
+- fuck man why so tedious, and why is there 2 san martins for literally only 2022 wtf
+
+TODO
+- modeling
+- update readme for midterm report

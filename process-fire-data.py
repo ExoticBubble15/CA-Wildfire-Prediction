@@ -27,7 +27,7 @@ def process(csv_data, export_name="complete-fire-data"):
 					acres_burned = row[8]
 
 					if fire_name != "" and start_date != "" and int(acres_burned) > 0 and end_date != "" and city != "":
-						if int(start_date[0:4]) >= 2014:
+						if int(start_date[0:4]) >= 2014 and int(start_date[0:4]) <= 2024:
 							outputWrite.writerow([fire_name, city, start_date, end_date, acres_burned])
 			except:
 				pass

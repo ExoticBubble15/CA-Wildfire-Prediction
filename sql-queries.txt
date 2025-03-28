@@ -1,0 +1,224 @@
+1. [complete-weather-and-fire-data.db]
+-- gets all cities that have weather data for all years in range [2014, 2024] and have had a fire within that time period
+SELECT DISTINCT city
+FROM "complete-fire-data"
+WHERE city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2014")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2015")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2016")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2017")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2018")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2019")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2020")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2021")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2022")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2023")
+AND city IN (SELECT DISTINCT city FROM "complete-weather-data" WHERE SUBSTR(date, 1, 4) = "2024")
+ORDER BY city
+
+*result (58 cities) saved to "complete data"/eligible-cities.csv"
+
+2. [complete-weather-and-fire-data.db]
+-- joins weather and fire data
+SELECT *
+FROM "complete-weather-data" W LEFT OUTER JOIN "complete-fire-data" F
+ON W.date = F.start_date AND W.city = F.city
+WHERE W.city IN (SELECT city FROM "eligible-cities")
+ORDER BY W.date, W.city
+
+*result (237415 weather and fire combos) modified (F.city changed to fire_breakout) and saved to "cleaned-data/cleaned-weather-fire-data.csv"
+
+3. [cleaned-weather-fire-data.db]
+-- replaces NULL values of fire_breakout with 0, otherwise 1
+UPDATE "cleaned-weather-fire-data"
+SET fire_breakout = 
+    CASE 
+        WHEN fire_breakout IS NULL THEN 0
+        ELSE 1
+    END	
+
+*result updates "cleaned-weather-fire-data.db"
+
+4-8. [cleaned-weather-fire-data.db]
+-- removes the "start_date" column
+ALTER TABLE "cleaned-weather-fire-data"
+DROP COLUMN start_date
+
+-- swaps fire_name and fire_breakout values for each row
+UPDATE "cleaned-weather-fire-data"
+SET fire_name = fire_breakout, fire_breakout = fire_name
+
+-- swaps fire_name and fire_breakout column names
+ALTER TABLE "cleaned-weather-fire-data"
+RENAME COLUMN "fire_name" to "final.fire_breakout"
+
+ALTER TABLE "cleaned-weather-fire-data"
+RENAME COLUMN "fire_breakout" to "fire_name"
+
+ALTER TABLE "cleaned-weather-fire-data"
+RENAME COLUMN "final.fire_breakout" to "fire_breakout"
+
+*CHANGES: delete start_date col, swap column values and column titles for fire_name and fire_breakout
+*all results update "cleaned-weather-fire.db"
+
+9.
+SELECT *
+FROM "cleaned-weather-fire-data"
+
+*result (237415 rows) saved to "cleaned-data/cleaned-weather-fire-data.csv"
+
+10. [cleaned-weather-fire-data.db]
+-- removes duplicate "Vacaville" rows and replaces them with averages
+-- gets all non-"Vacaville" rows
+SELECT *
+FROM "cleaned-weather-fire-data"
+WHERE city != "Vacaville"
+
+UNION
+
+-- averages "Vacaville" rows
+SELECT city,
+       date,
+       AVG(avgDBT),
+       AVG(avgDPT),
+       AVG(avgPress),
+       AVG(avgSkyCov),
+       AVG(avgWSpd),
+       AVG(avgWndDir),
+       AVG(totalSatGHI),
+       AVG(totalSatDNI),
+       AVG(avgPresWth),
+       AVG(totalRain),
+       AVG(avgVisib),
+       AVG(avgCeil),
+       fire_breakout,
+       fire_name,
+       end_date,
+       acres_burned
+FROM "cleaned-weather-fire-data"
+WHERE city = "Vacaville"
+GROUP BY city, date
+
+ORDER BY date, city
+
+*result (233397 rows) saved to "cleaned-data/cleaned-weather-fire-data.csv"
+*previous "cleaned-weather-fire-data.db" file deleted, and recreated with result
+*note, total amount of fires decreased to 238 (from 241) bc 3 duplicate "Vacaville" fires
+
+11. [cleaned-weather-fire-data.db]
+-- rounds all REALs, then into INTEGERs
+SELECT city, 
+       date, 
+       CAST(ROUND(avgDBT) AS INTEGER) AS avgDBT, 
+       CAST(ROUND(avgDPT) AS INTEGER) AS avgDPT, 
+       CAST(ROUND(avgPress) AS INTEGER) AS avgPress, 
+       CAST(ROUND(avgSkyCov) AS INTEGER) AS avgSkyCov, 
+       CAST(ROUND(avgWSpd) AS INTEGER) AS avgWSpd, 
+       CAST(ROUND(avgWndDir) AS INTEGER) AS avgWndDir, 
+       CAST(ROUND(totalSatGHI) AS INTEGER) AS totalSatGHI, 
+       CAST(ROUND(totalSatDNI) AS INTEGER) AS totalSatDNI, 
+       CAST(ROUND(avgPresWth) AS INTEGER) AS avgPresWth, 
+       CAST(ROUND(totalRain) AS INTEGER) AS totalRain, 
+       CAST(ROUND(avgVisib) AS INTEGER) AS avgVisib, 
+       CAST(ROUND(avgCeil) AS INTEGER) AS avgCeil, 
+       fire_breakout, 
+       fire_name, 
+       end_date, 
+       CAST(ROUND(acres_burned) AS INTEGER) AS acres_burned
+FROM "cleaned-weather-fire-data";
+
+*result (233397 rows) saved to "cleaned-data/cleaned-weather-fire-data.csv"
+*previous "cleaned-weather-fire-data.db" file deleted, and recreated with result
+*i have no idea why "San Martin" is duped for 2022? 
+
+12. [cleaned-weather-fire-data.db]
+-- removes duplicate "San Martin" rows from 2022, and replaces them with averages
+-- gets all rows that are not ("San Martin" and "2022-xx-xx")
+SELECT *
+FROM "cleaned-weather-fire-data"
+WHERE NOT (city = "San Martin" AND SUBSTR(date, 1, 4) = "2022")
+
+UNION
+
+-- averages "San Martin" rows from 2022, then casts as integer
+SELECT city, 
+       date, 
+       CAST(ROUND(AVG(avgDBT)) AS INTEGER) AS avgDBT, 
+       CAST(ROUND(AVG(avgDPT)) AS INTEGER) AS avgDPT, 
+       CAST(ROUND(AVG(avgPress)) AS INTEGER) AS avgPress, 
+       CAST(ROUND(AVG(avgSkyCov)) AS INTEGER) AS avgSkyCov, 
+       CAST(ROUND(AVG(avgWSpd)) AS INTEGER) AS avgWSpd, 
+       CAST(ROUND(AVG(avgWndDir)) AS INTEGER) AS avgWndDir, 
+       CAST(ROUND(AVG(totalSatGHI)) AS INTEGER) AS totalSatGHI, 
+       CAST(ROUND(AVG(totalSatDNI)) AS INTEGER) AS totalSatDNI, 
+       CAST(ROUND(AVG(avgPresWth)) AS INTEGER) AS avgPresWth, 
+       CAST(ROUND(AVG(totalRain)) AS INTEGER) AS totalRain, 
+       CAST(ROUND(AVG(avgVisib)) AS INTEGER) AS avgVisib, 
+       CAST(ROUND(AVG(avgCeil)) AS INTEGER) AS avgCeil, 
+       fire_breakout, 
+       fire_name, 
+       end_date, 
+       CAST(ROUND(acres_burned) AS INTEGER) AS acres_burned
+FROM "cleaned-weather-fire-data"
+WHERE city = "San Martin" AND SUBSTR(date, 1, 4) = "2022"
+GROUP BY city, date
+
+ORDER BY date, city
+
+*result (233032 (233397 previous - 365 duped from 2022) rows) saved to "cleaned-data/cleaned-weather-fire-data.csv"
+*previous "cleaned-weather-fire-data.db" file deleted, and recreated with result
+*DATA CLEANING COMPLETE
+
+13. [cleaned-weather-fire-data.db]
+-- gets the amount of fires in each year
+SELECT SUBSTR(date, 1, 4), COUNT(*)
+FROM "cleaned-weather-fire-data"
+WHERE fire_breakout = 1
+GROUP BY SUBSTR(date, 1, 4)
+
+*result (sum = 238) used to identify training/validation/testing data
+2014	12
+2015	8
+2016	19
+2017	40
+2018	40
+2019	27
+2020	24
+[^ training: 170/238 ~71.4%]
+2021	21
+2022	7
+[^ validation: 28/238 ~11.7%]
+2023	8
+2024	32
+[^ testing, 40/238 ~16.9%]
+
+14. [cleaned-weather-fire-data.db]
+-- generates training data
+SELECT *
+FROM "cleaned-weather-fire-data"
+WHERE SUBSTR(date, 1, 4) = "2014"
+OR SUBSTR(date, 1, 4) = "2015"
+OR SUBSTR(date, 1, 4) = "2016"
+OR SUBSTR(date, 1, 4) = "2017"
+OR SUBSTR(date, 1, 4) = "2018"
+OR SUBSTR(date, 1, 4) = "2019"
+OR SUBSTR(date, 1, 4) = "2020"
+
+*result (148293 rows) saved to "training-data.csv"
+
+15. [cleaned-weather-fire-data.db]
+-- generates validation data
+SELECT *
+FROM "cleaned-weather-fire-data"
+WHERE SUBSTR(date, 1, 4) = "2021"
+OR SUBSTR(date, 1, 4) = "2022"
+
+*result (42341 rows) saved to "validation-data.csv"
+
+16. [cleaned-weather-fire-data.db]
+-- generates testing data
+SELECT *
+FROM "cleaned-weather-fire-data"
+WHERE SUBSTR(date, 1, 4) = "2023"
+OR SUBSTR(date, 1, 4) = "2024"
+
+*result (42398 rows) saved to "testing-data.csv"
