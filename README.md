@@ -2,7 +2,7 @@
 *Analyzing previous weather data to predict future fires*
 
 ### Midterm Report Presentation
-A 5 minute explanation of the current progress can be found [here].
+A 5 minute explanation of the current progress can be found [here](https://www.youtube.com/watch?v=LlNibjA3JIs).
 
 ## Project Description / Goal
 California has a defined history of being extremely susceptible to wildfires, with the recent Palisades and Eaton fires being prime demonstrations of their devastating effects on wildlife and urban communities. This project will aim to develop a model that can identify which area(s) of the state are at the highest risk for a fire to break out, using historical weather and fire data to find a correlation between these factors. Additionally, the model will determine how much each weather feature contributes towards the area's fire risk.
