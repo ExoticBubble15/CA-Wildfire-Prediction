@@ -77,3 +77,18 @@ NOTES
 TODO
 - modeling
 - update readme for midterm report
+
+-------------
+3/28-3/30
+- wrote scripts for graphing city weather data (up to 3 at a time)
+- added some example visualizations
+- updated readme for midterm report
+- made video explaning progress
+
+NOTES
+- more features for visualization (plotting multiple cities at once, relative axes) ?
+- tSNE for entire dataset (maybe)
+- im so exhausted gg
+
+TODO
+- actual model construction xdd

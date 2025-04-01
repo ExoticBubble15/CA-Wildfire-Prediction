@@ -222,3 +222,71 @@ WHERE SUBSTR(date, 1, 4) = "2023"
 OR SUBSTR(date, 1, 4) = "2024"
 
 *result (42398 rows) saved to "testing-data.csv"
+
+17. [cleaned-weather-fire-data.db]
+-- gets number of fires per city
+SELECT city, COUNT(city)
+FROM "cleaned-weather-fire-data"
+WHERE fire_breakout = 1
+GROUP BY city
+ORDER BY COUNT(city) DESC
+
+*result used for visualization reference
+Alturas	29
+Montague	17
+Lebec	16
+Red Bluff	13
+Livermore	9
+Thermalito	8
+Oildale	7
+Chico	7
+Camp Pendleton North	7
+Beale Air Force Base	7
+San Luis Obispo	6
+Highland	6
+San Martin	5
+Paso Robles	5
+Mammoth Lakes	5
+Madera Acres	5
+Anderson	5
+North Highlands	4
+Lompoc	4
+Lincoln	4
+Foresthill	4
+American Canyon	4
+Vacaville	3
+Tehachapi	3
+South Lake Tahoe	3
+Santa Ynez	3
+Ramona	3
+Nevada City	3
+Corona	3
+Winton	2
+Vandenberg Space Force Base	2
+Truckee	2
+Rancho Cordova	2
+Placerville	2
+Palm Springs	2
+Mojave	2
+Hollister	2
+Goleta	2
+Bishop	2
+Alum Rock	2
+Windsor	1
+Twentynine Palms	1
+Thermal	1
+San Fernando	1
+Salinas	1
+Riverside	1
+Ridgecrest	1
+Rancho Cucamonga	1
+Porterville	1
+Palmdale	1
+Mount Shasta	1
+March Air Force Base	1
+Lancaster	1
+Lake San Marcos	1
+La Verne	1
+Elverta	1
+Del Rey Oaks	1
+Columbia	1
