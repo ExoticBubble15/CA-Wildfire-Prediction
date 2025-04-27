@@ -89,6 +89,13 @@ def visualize(argsList):
 		totalFires += len(xAtts)
 
 	print(f'{totalFires} fires')
+	increment = 250
+	ax.set_xticks(range(0, int(ax.get_xlim()[1]+1), increment))
+	ax.set_yticks(range(0, int(ax.get_ylim()[1]+1), increment))
+	try:
+		ax.set_zticks(range(0, int(ax.get_zlim()[1]+1), increment))
+	except:
+		pass
 	leg = ax.legend(fontsize='small', loc='upper right')
 	leg.set_draggable(True)
 	plt.show()

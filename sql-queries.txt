@@ -192,38 +192,6 @@ GROUP BY SUBSTR(date, 1, 4)
 [^ testing, 40/238 ~16.9%]
 
 14. [cleaned-weather-fire-data.db]
--- generates training data
-SELECT *
-FROM "cleaned-weather-fire-data"
-WHERE SUBSTR(date, 1, 4) = "2014"
-OR SUBSTR(date, 1, 4) = "2015"
-OR SUBSTR(date, 1, 4) = "2016"
-OR SUBSTR(date, 1, 4) = "2017"
-OR SUBSTR(date, 1, 4) = "2018"
-OR SUBSTR(date, 1, 4) = "2019"
-OR SUBSTR(date, 1, 4) = "2020"
-
-*result (148293 rows) saved to "training-data.csv"
-
-15. [cleaned-weather-fire-data.db]
--- generates validation data
-SELECT *
-FROM "cleaned-weather-fire-data"
-WHERE SUBSTR(date, 1, 4) = "2021"
-OR SUBSTR(date, 1, 4) = "2022"
-
-*result (42341 rows) saved to "validation-data.csv"
-
-16. [cleaned-weather-fire-data.db]
--- generates testing data
-SELECT *
-FROM "cleaned-weather-fire-data"
-WHERE SUBSTR(date, 1, 4) = "2023"
-OR SUBSTR(date, 1, 4) = "2024"
-
-*result (42398 rows) saved to "testing-data.csv"
-
-17. [cleaned-weather-fire-data.db]
 -- gets number of fires per city
 SELECT city, COUNT(city)
 FROM "cleaned-weather-fire-data"
@@ -290,3 +258,42 @@ La Verne	1
 Elverta	1
 Del Rey Oaks	1
 Columbia	1
+
+15. [aggregate-features.db]
+--orders data appropriately after feature engineering
+SELECT * FROM "aggregate-features" ORDER BY date, city
+
+*result saved to "aggregate-features.csv"
+*^ used to repopulate "aggregate-features.db"
+
+16. [aggregate-features.db]
+-- generates training data
+SELECT *
+FROM "aggregate-features"
+WHERE SUBSTR(date, 1, 4) = "2014"
+OR SUBSTR(date, 1, 4) = "2015"
+OR SUBSTR(date, 1, 4) = "2016"
+OR SUBSTR(date, 1, 4) = "2017"
+OR SUBSTR(date, 1, 4) = "2018"
+OR SUBSTR(date, 1, 4) = "2019"
+OR SUBSTR(date, 1, 4) = "2020"
+
+*result (148293 rows) saved to "training.csv"
+
+17. [aggregate-features.db]
+-- generates validation data
+SELECT *
+FROM "aggregate-features"
+WHERE SUBSTR(date, 1, 4) = "2021"
+OR SUBSTR(date, 1, 4) = "2022"
+
+*result (42341 rows) saved to "validation.csv"
+
+18. [aggregate-features.db]
+-- generates testing data
+SELECT *
+FROM "aggregate-features"
+WHERE SUBSTR(date, 1, 4) = "2023"
+OR SUBSTR(date, 1, 4) = "2024"
+
+*result (42398 rows) saved to "testing.csv"

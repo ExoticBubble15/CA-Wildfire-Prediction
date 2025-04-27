@@ -3,6 +3,7 @@ import csv
 import sqlite3
 import matplotlib.pyplot as plt
 import datetime
+import random
 
 def daysBetween(day1, day2):
 	day1 = datetime.datetime.strptime(day1, "%Y-%m-%d")
@@ -21,7 +22,9 @@ def visualize(argsList):
 	with open(cities, "r", newline="") as cities:
 		reader = csv.reader(cities)
 		eligibleCities = [row[0] for row in list(reader)[1:]]
-	if city not in eligibleCities:
+	if city == "random":
+		city = eligibleCities[random.randint(0, len(eligibleCities)-1)]
+	elif city not in eligibleCities:
 		raise Exception(f'{city} is an invalid city')
 	print(city)
 
@@ -103,6 +106,14 @@ def visualize(argsList):
 	# else:
 	# 	lines.append(ax.plot(xAtts, yAtts, label=f'end {city} {date} ({daysBetween(mostRecentFire, date)})', marker='o', markevery=[-1], markersize=7, markeredgecolor='black')[0]) ##!
 	print(f'{fireCounter} fires')
+
+	increment = 100
+	ax.set_xticks(range(0, int(ax.get_xlim()[1]+1), increment))
+	# ax.set_yticks(range(0, int(ax.get_ylim()[1]+1), increment))
+	try:
+		ax.set_zticks(range(0, int(ax.get_zlim()[1]+1), increment))
+	except:
+		pass
 
 	#begin ##!
 	leg = ax.legend(fontsize='small', loc='upper right')
