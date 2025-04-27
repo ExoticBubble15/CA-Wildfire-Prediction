@@ -28,56 +28,68 @@ with open(f'aggregate-features.csv', 'w', newline='') as outputFile:
 		npAttributes = np.array([row[2:len(row)-4] for row in queryResult])
 
 		for count, row in enumerate(queryResult):
-			#need nulls so that fire breakout isnt messed up when writing to csv
-			inc1ValuesCombined, inc2ValuesCombined, inc3ValuesCombined = [None for i in colsInc1], [None for i in colsInc2], [None for i in colsInc3]
+			# #need nulls so that fire breakout isnt messed up when writing to csv
+			# inc1ValuesCombined, inc2ValuesCombined, inc3ValuesCombined = [None for i in colsInc1], [None for i in colsInc2], [None for i in colsInc3]
 
+			#need these checks for partial rolling averages/totals
 			if count >= (inc1-1):
-				inc1Values = np.sum(npAttributes[count-(inc1-1):count+1], axis=0)
-				avgDBT_inc1 = inc1Values[0]/inc1
-				avgDPT_inc1 = inc1Values[1]/inc1
-				avgPress_inc1 = inc1Values[2]/inc1
-				avgSkyCov_inc1 = inc1Values[3]/inc1
-				avgWSpd_inc1 = inc1Values[4]/inc1
-				# avgWndDir_inc1 = inc1Values[5]/inc1
-				totalSatGHI_inc1 = inc1Values[6]
-				totalSatDNI_inc1 = inc1Values[7]
-				# avgPresWth_inc1 = inc1Values[8]/inc1
-				totalRain_inc1 = inc1Values[9]
-				avgVisib_inc1 = inc1Values[10]/inc1
-				avgCeil_inc1 = inc1Values[11]/inc1
-				inc1ValuesCombined = [avgDBT_inc1, avgDPT_inc1, avgPress_inc1, avgSkyCov_inc1, avgWSpd_inc1, totalSatGHI_inc1, totalSatDNI_inc1, totalRain_inc1, avgVisib_inc1, avgCeil_inc1]
-				inc1ValuesCombined = [round(i) for i in inc1ValuesCombined]
+				inc1Len = inc1
+			else:
+				inc1Len = (count+1)
+			inc1Values = np.sum(npAttributes[count-(inc1Len-1):count+1], axis=0)
+			avgDBT_inc1 = inc1Values[0]/inc1Len
+			avgDPT_inc1 = inc1Values[1]/inc1Len
+			avgPress_inc1 = inc1Values[2]/inc1Len
+			avgSkyCov_inc1 = inc1Values[3]/inc1Len
+			avgWSpd_inc1 = inc1Values[4]/inc1Len
+			# avgWndDir_inc1 = inc1Values[5]/inc1Len
+			totalSatGHI_inc1 = inc1Values[6]
+			totalSatDNI_inc1 = inc1Values[7]
+			# avgPresWth_inc1 = inc1Values[8]/inc1Len
+			totalRain_inc1 = inc1Values[9]
+			avgVisib_inc1 = inc1Values[10]/inc1Len
+			avgCeil_inc1 = inc1Values[11]/inc1Len
+			inc1ValuesCombined = [avgDBT_inc1, avgDPT_inc1, avgPress_inc1, avgSkyCov_inc1, avgWSpd_inc1, totalSatGHI_inc1, totalSatDNI_inc1, totalRain_inc1, avgVisib_inc1, avgCeil_inc1]
+			inc1ValuesCombined = [round(i) for i in inc1ValuesCombined]
+
 			if count >= (inc2-1):
-				inc2Values = np.sum(npAttributes[count-(inc2-1):count+1], axis=0)
-				avgDBT_inc2 = inc2Values[0]/inc2
-				avgDPT_inc2 = inc2Values[1]/inc2
-				avgPress_inc2 = inc2Values[2]/inc2
-				avgSkyCov_inc2 = inc2Values[3]/inc2
-				avgWSpd_inc2 = inc2Values[4]/inc2
-				# avgWndDir_inc2 = inc2Values[5]/inc2
-				totalSatGHI_inc2 = inc2Values[6]
-				totalSatDNI_inc2 = inc2Values[7]
-				# avgPresWth_inc2 = inc2Values[8]/inc2
-				totalRain_inc2 = inc2Values[9]
-				avgVisib_inc2 = inc2Values[10]/inc2
-				avgCeil_inc2 = inc2Values[11]/inc2
-				inc2ValuesCombined = [avgDBT_inc2, avgDPT_inc2, avgPress_inc2, avgSkyCov_inc2, avgWSpd_inc2, totalSatGHI_inc2, totalSatDNI_inc2, totalRain_inc2, avgVisib_inc2, avgCeil_inc2]
-				inc2ValuesCombined = [round(i) for i in inc2ValuesCombined]
+				inc2Len = inc2
+			else:
+				inc2Len = (count+1)
+			inc2Values = np.sum(npAttributes[count-(inc2Len-1):count+1], axis=0)
+			avgDBT_inc2 = inc2Values[0]/inc2Len
+			avgDPT_inc2 = inc2Values[1]/inc2Len
+			avgPress_inc2 = inc2Values[2]/inc2Len
+			avgSkyCov_inc2 = inc2Values[3]/inc2Len
+			avgWSpd_inc2 = inc2Values[4]/inc2Len
+			# avgWndDir_inc2 = inc2Values[5]/inc2Len
+			totalSatGHI_inc2 = inc2Values[6]
+			totalSatDNI_inc2 = inc2Values[7]
+			# avgPresWth_inc2 = inc2Values[8]/inc2Len
+			totalRain_inc2 = inc2Values[9]
+			avgVisib_inc2 = inc2Values[10]/inc2Len
+			avgCeil_inc2 = inc2Values[11]/inc2Len
+			inc2ValuesCombined = [avgDBT_inc2, avgDPT_inc2, avgPress_inc2, avgSkyCov_inc2, avgWSpd_inc2, totalSatGHI_inc2, totalSatDNI_inc2, totalRain_inc2, avgVisib_inc2, avgCeil_inc2]
+			inc2ValuesCombined = [round(i) for i in inc2ValuesCombined]
+
 			if count >= (inc3-1):
-				inc3Values = np.sum(npAttributes[count-(inc3-1):count+1], axis=0)
-				avgDBT_inc3 = inc3Values[0]/inc3
-				avgDPT_inc3 = inc3Values[1]/inc3
-				avgPress_inc3 = inc3Values[2]/inc3
-				avgSkyCov_inc3 = inc3Values[3]/inc3
-				avgWSpd_inc3 = inc3Values[4]/inc3
-				# avgWndDir_inc3 = inc3Values[5]/inc3
-				totalSatGHI_inc3 = inc3Values[6]
-				totalSatDNI_inc3 = inc3Values[7]
-				# avgPresWth_inc3 = inc3Values[8]/inc3
-				totalRain_inc3 = inc3Values[9]
-				avgVisib_inc3 = inc3Values[10]/inc3
-				avgCeil_inc3 = inc3Values[11]/inc3
-				inc3ValuesCombined = [avgDBT_inc3, avgDPT_inc3, avgPress_inc3, avgSkyCov_inc3, avgWSpd_inc3, totalSatGHI_inc3, totalSatDNI_inc3, totalRain_inc3, avgVisib_inc3, avgCeil_inc3]
-				inc3ValuesCombined = [round(i) for i in inc3ValuesCombined]
+				inc3Len = inc3
+			else:
+				inc3Len = (count+1)
+			inc3Values = np.sum(npAttributes[count-(inc3Len-1):count+1], axis=0)
+			avgDBT_inc3 = inc3Values[0]/inc3Len
+			avgDPT_inc3 = inc3Values[1]/inc3Len
+			avgPress_inc3 = inc3Values[2]/inc3Len
+			avgSkyCov_inc3 = inc3Values[3]/inc3Len
+			avgWSpd_inc3 = inc3Values[4]/inc3Len
+			# avgWndDir_inc3 = inc3Values[5]/inc3Len
+			totalSatGHI_inc3 = inc3Values[6]
+			totalSatDNI_inc3 = inc3Values[7]
+			# avgPresWth_inc3 = inc3Values[8]/inc3Len
+			totalRain_inc3 = inc3Values[9]
+			avgVisib_inc3 = inc3Values[10]/inc3Len
+			avgCeil_inc3 = inc3Values[11]/inc3Len
+			inc3ValuesCombined = [avgDBT_inc3, avgDPT_inc3, avgPress_inc3, avgSkyCov_inc3, avgWSpd_inc3, totalSatGHI_inc3, totalSatDNI_inc3, totalRain_inc3, avgVisib_inc3, avgCeil_inc3]
+			inc3ValuesCombined = [round(i) for i in inc3ValuesCombined]
 
 			outputWrite.writerow(np.concatenate((row[:-4], inc1ValuesCombined, inc2ValuesCombined, inc3ValuesCombined, row[-4:])))
