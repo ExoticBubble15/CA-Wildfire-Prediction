@@ -112,3 +112,10 @@ TODO
 NOTES
 - gg still
 - feature engineering now includes partial windows (ex - for city on day 35, avgDBT_50 actually is avgDBT_35) (only affects training data)
+
+
+4/27 (commit 3)
+- added knn logic
+
+TODO
+- define model accuracy
