@@ -259,17 +259,10 @@ Elverta	1
 Del Rey Oaks	1
 Columbia	1
 
-15. [aggregate-features.db]
---orders data appropriately after feature engineering
-SELECT * FROM "aggregate-features" ORDER BY date, city
-
-*result saved to "aggregate-features.csv"
-*^ used to repopulate "aggregate-features.db"
-
-16. [aggregate-features.db]
+15. [cleaned-weather-fire-data.db]
 -- generates training data
 SELECT *
-FROM "aggregate-features"
+FROM "cleaned-weather-fire-data"
 WHERE SUBSTR(date, 1, 4) = "2014"
 OR SUBSTR(date, 1, 4) = "2015"
 OR SUBSTR(date, 1, 4) = "2016"
@@ -278,22 +271,28 @@ OR SUBSTR(date, 1, 4) = "2018"
 OR SUBSTR(date, 1, 4) = "2019"
 OR SUBSTR(date, 1, 4) = "2020"
 
-*result (148293 rows) saved to "training.csv"
+*result (148293 rows) saved to "cleaned-training.csv"
 
-17. [aggregate-features.db]
+16. [cleaned-weather-fire-data.db]
 -- generates validation data
 SELECT *
-FROM "aggregate-features"
+FROM "cleaned-weather-fire-data"
 WHERE SUBSTR(date, 1, 4) = "2021"
 OR SUBSTR(date, 1, 4) = "2022"
 
-*result (42341 rows) saved to "validation.csv"
+*result (42341 rows) saved to "cleaning-validation.csv"
 
-18. [aggregate-features.db]
+17. [cleaned-weather-fire-data.db]
 -- generates testing data
 SELECT *
-FROM "aggregate-features"
+FROM "cleaned-weather-fire-data"
 WHERE SUBSTR(date, 1, 4) = "2023"
 OR SUBSTR(date, 1, 4) = "2024"
 
-*result (42398 rows) saved to "testing.csv"
+*result (42398 rows) saved to "cleaning-testing.csv"
+
+18.
+-- 
+SELECT * FROM "cleaned-training"
+UNION SELECT * FROM "cleaned-validation"
+ORDER BY date, city

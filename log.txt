@@ -119,3 +119,14 @@ NOTES
 
 TODO
 - define model accuracy
+
+-------------
+4/29-4/30
+- reengineered features
+- fixed validation/testing data leakage
+
+NOTES
+- shitshitshitshit
+
+TODO
+- model eval
