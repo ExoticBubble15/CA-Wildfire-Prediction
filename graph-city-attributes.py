@@ -12,7 +12,7 @@ def daysBetween(day1, day2):
 
 def visualize(argsList):
 	cities = "complete-data/eligible-cities.csv"
-	database = "cleaned-data/cleaned-weather-fire-data.db"
+	database = "cleaned-data/aggregate/cleaned-weather-fire-data.db"
 
 	#verifying arguments
 	if len(argsList) > 4 or len(argsList) < 3:

@@ -16,7 +16,7 @@ def daysBetween(day1, day2):
 
 def visualize(argsList):
 	cities = "complete-data/eligible-cities.csv"
-	database = "cleaned-data/cleaned-weather-fire-data.db"
+	database = "cleaned-data/aggregate/cleaned-weather-fire-data.db"
 
 	# verifying arguments
 	if len(argsList) > 3 or len(argsList) < 2:
@@ -89,13 +89,13 @@ def visualize(argsList):
 		totalFires += len(xAtts)
 
 	print(f'{totalFires} fires')
-	increment = 250
-	ax.set_xticks(range(0, int(ax.get_xlim()[1]+1), increment))
-	ax.set_yticks(range(0, int(ax.get_ylim()[1]+1), increment))
-	try:
-		ax.set_zticks(range(0, int(ax.get_zlim()[1]+1), increment))
-	except:
-		pass
+	# increment = 250
+	# ax.set_xticks(range(0, int(ax.get_xlim()[1]+1), increment))
+	# ax.set_yticks(range(0, int(ax.get_ylim()[1]+1), increment))
+	# try:
+	# 	ax.set_zticks(range(0, int(ax.get_zlim()[1]+1), increment))
+	# except:
+	# 	pass
 	leg = ax.legend(fontsize='small', loc='upper right')
 	leg.set_draggable(True)
 	plt.show()

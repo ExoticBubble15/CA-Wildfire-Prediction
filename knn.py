@@ -1,132 +1,139 @@
 import sqlite3
-# from sklearn.decomposition import TruncatedSVD
-from sklearn.preprocessing import MinMaxScaler#, normalize
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import normalize
+from sklearn.neighbors import NearestNeighbors
 import numpy as np
+import datetime
+import matplotlib.pyplot as plt
 
-#omits city, date, and fire info per row
+def daysBetween(day1, day2):
+	day1 = datetime.datetime.strptime(day1, "%Y-%m-%d")
+	day2 = datetime.datetime.strptime(day2, "%Y-%m-%d")
+	return (day2-day1).days
+
+#gets weather features from each row
 def getWeatherVals(arrList):
 	return np.array([arr[2:-4] for arr in arrList])
 
-#omits unnecessary info, scales, and normalizes each row
-def getFormattedWeatherVals(arrList):
-	vals = getWeatherVals(arrList)
-	vals = scaler.transform(vals)
-	# vals = svd.transform(vals)
-	# vals = normalize(vals)
-	return vals
+#gets normalized weather features for each row
+def normalizedWeatherVals(arrList):
+	return normalize(getWeatherVals(arrList))
 
-#gets numerical fire info in the form [[fire_breakout (0 or 1), acres_burned (0 or value)], ...]
+#gets list of fire outbreaks [fire_breakout (0 or 1), ...]
 def getFireDetails(arrList):
-	return np.array([[arr[-4], 0 if arr[-1] == None else arr[-1]] for arr in arrList])
+	# return np.array([[arr[-4], 0 if arr[-1] == None else arr[-1]] for arr in arrList])
+	return np.array([arr[-4] for arr in arrList])
+
+const = 350*2
+def weightFunction(daysBetween):
+	return np.e**(-((daysBetween-1)/const))
 
 printSimilar = False
-def getNeighborVals(title, knnFunc, arr):
-	outbreakValue = 0
+def getNeighborVals(title, nnFunc, rows, date):
+	score = 0
+	numFires = 0
+	dists, indices = nnFunc[0][0], nnFunc[1][0]
 
-	dists, indices = knnFunc[0][0], knnFunc[1][0]
 	if printSimilar:
 		print(f"-----{title.upper()}----")
 	for count, i in enumerate(indices):
 		similarityScore = 1-dists[count]
-		similarRow = arr[i]
+		similarRow = rows[i]
 
 		if printSimilar:
 			print("similarity:", similarityScore)
-			print(arr[i])
+			print(rows[i])
 			print("//")
+		if similarRow[-4] == 1:
+			numFires += 1
 
-		outbreakValue += similarityScore*similarRow[-4]
+		score += similarityScore * similarRow[-4] * weightFunction(daysBetween(similarRow[1], date))
 
-	# print(outbreakValue)
-	return outbreakValue
+	# print(f"{title} {score/len(dists)} {numFires}") 
+	return score/len(dists)
 
 def topSimilar(originalVec):
 	city = originalVec[0]
-	originalWeather = getFormattedWeatherVals([originalVec])
+	date = originalVec[1]
+	originalWeather = normalizedWeatherVals([originalVec])
+	# print(f"\n{originalVec}")
 
-	#create knn models for city if not already exists (should only apply for the first step of validation/testing data)
-	if city not in cityKnnModels:
+	#create nn models for city if not already exists (should only execute in the first step of validation/testing data)
+	if city not in cityNnModels:
 		print(f"\n{city}")
-		print("knn models NOT FOUND, creating...")
+		print("nn models NOT FOUND, creating...")
 
-		#model for same city only, fires and non fires included
-		cursor.execute(f"SELECT * FROM training WHERE city = \"{city}\"")
+		#model with all rows from city only (training only)
+		cursor.execute(f"SELECT * FROM \"engineered-training\" WHERE city = \"{city}\"")
 		queryResult = cursor.fetchall()
-		sameCityData = queryResult
-		sameCityWeather = getFormattedWeatherVals(queryResult)
-		sameCityFire = getFireDetails(queryResult)
-		knnSameCity = KNeighborsClassifier(n_neighbors=sameCityNumNeighbors, metric="cosine", weights="distance")
-		knnSameCity.fit(sameCityWeather, sameCityFire)
-		print("same city knn done")
+		sameCityRows = queryResult
+		sameCityWeather = normalizedWeatherVals(queryResult)
+		nnSameCity = NearestNeighbors(n_neighbors=sameCityNumNeighbors, metric="cosine")
+		nnSameCity.fit(sameCityWeather)
+		print("same city nn done")
 
-		#model for all every other city data, fires and non fires included
-		cursor.execute(f"SELECT * FROM training WHERE city != \"{city}\"")
+		#model with all rows from all other cities (training only)
+		cursor.execute(f"SELECT * FROM \"engineered-training\" WHERE city != \"{city}\"")
 		queryResult = cursor.fetchall()
-		otherCityData = queryResult
-		otherCityWeather = getFormattedWeatherVals(queryResult)
-		otherCityFire = getFireDetails(queryResult)
-		knnOtherCity = KNeighborsClassifier(n_neighbors=otherCityNumNeighbors, metric="cosine", weights="distance")
-		knnOtherCity.fit(otherCityWeather, otherCityFire)
+		otherCityRows = queryResult
+		otherCityWeather = normalizedWeatherVals(queryResult)
+		nnOtherCity = NearestNeighbors(n_neighbors=otherCityNumNeighbors, metric="cosine")
+		nnOtherCity.fit(otherCityWeather)
 		print("other city done")
 
-		cityKnnModels[city] = [knnSameCity, knnOtherCity, sameCityData, otherCityData]
+		cityNnModels[city] = [nnSameCity, nnOtherCity, sameCityRows, otherCityRows]
 
-	# print(originalVec[1])
-	# print(f"~~~~~\n{originalVec}")
-	a = getNeighborVals("same city", cityKnnModels[city][0].kneighbors(originalWeather), cityKnnModels[city][2]) / sameCityNumNeighbors * sameCityWeight
-	b = getNeighborVals("other city", cityKnnModels[city][1].kneighbors(originalWeather), cityKnnModels[city][3]) / otherCityNumNeighbors * otherCityWeight
-	c = getNeighborVals("fire", knnFires.kneighbors(originalWeather), fireData) / fireNumNeighbors * fireWeight
-	return a + b + c
+	a = getNeighborVals("same city", cityNnModels[city][0].kneighbors(originalWeather), cityNnModels[city][2], date) * sameCityWeight
+	b = getNeighborVals("other city", cityNnModels[city][1].kneighbors(originalWeather), cityNnModels[city][3], date) * otherCityWeight
+	c = getNeighborVals("fire", nnFires.kneighbors(originalWeather), fireRows, date) * fireWeight
+
+	# print(f"FINAL SCORE: {a+b+c}")
+	return a+b+c
 	
-database = "split-data.db"
+database = "engineered-subsets.db"
 connection = sqlite3.connect(database)
 cursor = connection.cursor()
-# fireNumNeighbors, sameCityNumNeighbors, otherCityNumNeighbors = 20, 150, 7000
-# fireWeight, sameCityWeight, otherCityWeight = .35, .45, .2
-# 16.875511396843947/28
-fireNumNeighbors, sameCityNumNeighbors, otherCityNumNeighbors = 35, 200, 10000
-fireWeight, sameCityWeight, otherCityWeight = .45, 0.35, 0.2
-cityKnnModels = {}
+
+fireNumNeighbors, sameCityNumNeighbors, otherCityNumNeighbors = 20, 100, 7000
+fireWeight, sameCityWeight, otherCityWeight = .6, .15, .25
+cityNnModels = {}
 
 if not np.isclose([fireWeight+sameCityWeight+otherCityWeight], [1]):
-	raise ValueError(fireWeight + sameCityWeight + otherCityWeight)
-
-#fitting scalers based on entire training data
-cursor.execute("SELECT * FROM training")
-queryResult = cursor.fetchall()
-# trainingData = queryResult #save the training data for future reference
-
-queryVals = getWeatherVals(queryResult) #cant modify yet bc need to fit scalers
-scaler = MinMaxScaler()
-queryVals = scaler.fit_transform(queryVals)
-# svd = TruncatedSVD(n_components=30)
-# queryVals = svd.fit_transform(queryVals)
-print("fitting done")
+	raise ValueError("weights must add to 1")
 
 #model for fires only
-cursor.execute("SELECT * FROM training WHERE fire_breakout = 1") #only get fire data
+cursor.execute("SELECT * FROM \"engineered-training\" WHERE fire_breakout = 1") #only get fire data
 queryResult = cursor.fetchall()
-fireData = queryResult
-fireWeather = getFormattedWeatherVals(queryResult)
-fireDetails = getFireDetails(queryResult)
+fireRows = queryResult
+fireWeather = normalizedWeatherVals(queryResult)
 
-knnFires = KNeighborsClassifier(n_neighbors=fireNumNeighbors, metric="cosine", weights="distance")
-knnFires.fit(fireWeather, fireDetails)
-print("knn fire done")
+nnFires = NearestNeighbors(n_neighbors=fireNumNeighbors, metric="cosine")
+nnFires.fit(fireWeather)
+print("nn fire done")
 
-cursor.execute("SELECT * FROM validation")
-# cursor.execute("SELECT * FROM validation WHERE date > \"2021-03-13\" AND date < \"2021-03-16\"")
+cursor.execute("SELECT * FROM \"engineered-testing\" ORDER BY date, city")
 queryResult = cursor.fetchall()
 date = ""
+
+# plt.figure(figsize=(13, 6))
+# xA = []
+# yA = []
+# for row in queryResult:
+# 	b, x, y = topSimilar(row)
+# 	xA.append(x)
+# 	yA.append(y)
+# 	if b:
+# 		plt.plot(xA, yA)
+# 		xA, yA = [], []
+# plt.plot(xA, yA)
+# plt.show()
 
 daysWithFires = {}
 predictions = {}
 dailyCityPreds = []
 fireOnDate = False
-for validationRow in queryResult:
-	city = validationRow[0]
-	rowDate = validationRow[1]
+for row in queryResult:
+	city = row[0]
+	rowDate = row[1]
 
 	if rowDate != date:
 		if fireOnDate:
@@ -136,26 +143,12 @@ for validationRow in queryResult:
 		date = rowDate
 		print(date)
 
-	if validationRow[-4] == 1:
+	if row[-4] == 1:
 		fireOnDate = True
 		if rowDate in daysWithFires:
 			daysWithFires[rowDate].append(city)
 		else:
 			daysWithFires[rowDate] = [city]
 
-	prob = topSimilar(validationRow)
-	dailyCityPreds.append((city, prob))
-
-score = 0
-numFires = 0
-print("\n\n\n")
-print(daysWithFires)
-print(predictions)
-for key in daysWithFires:
-	confirmedFires = daysWithFires[key]
-	cityRankings = [i[0] for i in predictions[key]]
-	for city in confirmedFires:
-		numFires += 1
-		score += (len(cityRankings) - cityRankings.index(city))/len(cityRankings)
-
-print(f"\n{score}/{numFires}")
+	score = topSimilar(row)
+	dailyCityPreds.append((city, score))

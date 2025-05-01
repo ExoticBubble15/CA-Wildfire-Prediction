@@ -1,0 +1,35 @@
+POINTS-BASED SCORING
+2021-03-14: Ridgecrest | predicted position: 11/58, points awarded: 0.81 /// 
+2021-05-14: Alturas | predicted position: 17/58, points awarded: 0.707 /// Winton | predicted position: 35/58, points awarded: 0.397 /// 
+2021-06-09: Camp Pendleton North | predicted position: 30/58, points awarded: 0.483 /// 
+2021-06-13: Beale Air Force Base | predicted position: 13/58, points awarded: 0.776 /// 
+2021-06-17: Chico | predicted position: 57/58, points awarded: 0.017 /// 
+2021-06-18: Lebec | predicted position: 8/58, points awarded: 0.862 /// 
+2021-06-21: North Highlands | predicted position: 14/58, points awarded: 0.759 /// 
+2021-06-22: Alturas | predicted position: 17/58, points awarded: 0.707 /// 
+2021-06-24: Alturas | predicted position: 26/58, points awarded: 0.552 /// 
+2021-06-25: San Martin | predicted position: 39/58, points awarded: 0.328 /// 
+2021-06-27: Lebec | predicted position: 19/58, points awarded: 0.672 /// 
+2021-06-28: Montague | predicted position: 12/58, points awarded: 0.793 /// 
+2021-07-03: Porterville | predicted position: 27/58, points awarded: 0.534 /// 
+2021-07-04: Lebec | predicted position: 27/58, points awarded: 0.534 /// 
+2021-07-05: Alturas | predicted position: 40/58, points awarded: 0.31 /// 
+2021-07-11: Lebec | predicted position: 26/58, points awarded: 0.552 /// 
+2021-07-12: Mammoth Lakes | predicted position: 6/58, points awarded: 0.897 /// 
+2021-07-31: Lebec | predicted position: 29/58, points awarded: 0.5 /// 
+2021-08-25: Columbia | predicted position: 4/58, points awarded: 0.931 /// 
+2021-10-11: American Canyon | predicted position: 8/58, points awarded: 0.862 /// 
+2022-02-16: Bishop | predicted position: 28/58, points awarded: 0.517 /// 
+2022-06-11: Lebec | predicted position: 11/58, points awarded: 0.81 /// 
+2022-06-22: Lebec | predicted position: 55/58, points awarded: 0.052 /// 
+2022-07-14: Anderson | predicted position: 10/58, points awarded: 0.828 /// 
+2022-07-19: Livermore | predicted position: 36/58, points awarded: 0.379 /// 
+2022-09-06: Foresthill | predicted position: 23/58, points awarded: 0.603 /// Foresthill | predicted position: 23/58, points awarded: 0.603 /// 
+predicted = 16.775/28 | random = 14.0/28 -> 19.821% increase from random
+
+PERCENTILE-BASED
+top 10.0%: predicted = 1/28 | random = 2.8/28 -> 64.286% decrease from random
+top 20.0%: predicted = 5/28 | random = 5.6/28 -> 10.714% decrease from random
+top 25.0%: predicted = 9/28 | random = 7.0/28 -> 28.571% increase from random
+top 33.3%: predicted = 12/28 | random = 9.333/28 -> 28.576% increase from random
+top 50.0%: predicted = 20/28 | random = 14.0/28 -> 42.857% increase from random

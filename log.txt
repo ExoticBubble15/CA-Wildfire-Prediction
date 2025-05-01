@@ -130,3 +130,13 @@ NOTES
 
 TODO
 - model eval
+
+-------------
+5/1
+- knn finalized
+- results generated
+
+TODO
+- maybe run again for verification
+- readme and video
+- clean some stuff up probably
