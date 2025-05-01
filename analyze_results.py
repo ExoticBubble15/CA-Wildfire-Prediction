@@ -26,6 +26,7 @@ def pointsBased(confirmed, predictions, results):
 	inc = "increase"
 	if improvement < 0:
 		inc = "decrease"
+		improvement *= -1
 	results.write(f"\npredicted = {score}/{maxPoints} | random = {maxPoints/2}/{maxPoints} -> {improvement}% {inc} from random")
 
 def percentileBased(sol, guess, results):
@@ -52,8 +53,12 @@ def percentileBased(sol, guess, results):
 			improvement *= -1
 		results.write(f'\ntop {round(100/divisor,1)}%: predicted = {correctPredictions}/{totalFires} | random = {randomCorrectPredictions}/{totalFires} -> {improvement}% {a} from random')
 
-def evaluateResults(confirmed, predictions, fileName):
+def evaluateResults(confirmed, predictions, fileName, query):
 	with open(f"{fileName}.txt", "w") as results:
+		results.write(f"data gathered via\n{query}")
+		results.write(f"\n\n\"test labels\" equivalent\n{confirmed}")
+		results.write(f"\n\n\"predictions\" equivalent\n{predictions}\n\n")
+		results.write("model evaluation 1\n")
 		pointsBased(confirmed, predictions, results)
-		results.write("\n\n")
+		results.write("\n\nmodel evaluation 2\n")
 		percentileBased(confirmed, predictions, results)

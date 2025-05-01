@@ -140,3 +140,11 @@ TODO
 - maybe run again for verification
 - readme and video
 - clean some stuff up probably
+
+5/1 (commit 2)
+- makefile done
+- everything done (except youtube video)
+- GG CHAT (sike still got the final xdd)
+
+NOTES
+- im tired

@@ -1,0 +1,46 @@
+POINTS-BASED SCORING
+2023-06-10: Twentynine Palms | predicted position: 14/58, points awarded: 0.759 /// 
+2023-06-30: Tehachapi | predicted position: 17/58, points awarded: 0.707 /// 
+2023-07-07: Lebec | predicted position: 13/58, points awarded: 0.776 /// 
+2023-08-01: Oildale | predicted position: 12/58, points awarded: 0.793 /// 
+2023-08-04: Mojave | predicted position: 40/58, points awarded: 0.31 /// 
+2023-08-09: Ramona | predicted position: 33/58, points awarded: 0.431 /// 
+2023-10-30: San Luis Obispo | predicted position: 44/58, points awarded: 0.241 /// 
+2023-12-15: Oildale | predicted position: 57/58, points awarded: 0.017 /// 
+2024-05-31: Oildale | predicted position: 21/58, points awarded: 0.638 /// Winton | predicted position: 27/58, points awarded: 0.534 /// 
+2024-06-09: Tehachapi | predicted position: 14/58, points awarded: 0.759 /// 
+2024-06-10: Montague | predicted position: 14/58, points awarded: 0.759 /// 
+2024-06-11: Lancaster | predicted position: 41/58, points awarded: 0.293 /// 
+2024-06-15: Lebec | predicted position: 53/58, points awarded: 0.086 /// 
+2024-06-17: Rancho Cordova | predicted position: 2/58, points awarded: 0.966 /// 
+2024-06-20: American Canyon | predicted position: 52/58, points awarded: 0.103 /// 
+2024-06-24: Lincoln | predicted position: 6/58, points awarded: 0.897 /// 
+2024-07-07: Alturas | predicted position: 15/58, points awarded: 0.741 /// 
+2024-07-08: Montague | predicted position: 40/58, points awarded: 0.31 /// 
+2024-07-19: Palmdale | predicted position: 42/58, points awarded: 0.276 /// 
+2024-07-21: Riverside | predicted position: 15/58, points awarded: 0.741 /// 
+2024-07-22: Alturas | predicted position: 33/58, points awarded: 0.431 /// 
+2024-07-23: Madera Acres | predicted position: 56/58, points awarded: 0.034 /// Montague | predicted position: 43/58, points awarded: 0.259 /// 
+2024-07-24: Windsor | predicted position: 15/58, points awarded: 0.741 /// 
+2024-07-25: Livermore | predicted position: 29/58, points awarded: 0.5 /// 
+2024-08-10: Tehachapi | predicted position: 29/58, points awarded: 0.5 /// 
+2024-08-13: Camp Pendleton North | predicted position: 53/58, points awarded: 0.086 /// 
+2024-08-19: Livermore | predicted position: 33/58, points awarded: 0.431 /// 
+2024-08-20: San Luis Obispo | predicted position: 53/58, points awarded: 0.086 /// 
+2024-08-23: Lebec | predicted position: 11/58, points awarded: 0.81 /// Santa Ynez | predicted position: 36/58, points awarded: 0.379 /// 
+2024-08-26: Rancho Cordova | predicted position: 54/58, points awarded: 0.069 /// 
+2024-08-29: Livermore | predicted position: 28/58, points awarded: 0.517 /// 
+2024-09-06: Camp Pendleton North | predicted position: 34/58, points awarded: 0.414 /// 
+2024-09-07: Camp Pendleton North | predicted position: 33/58, points awarded: 0.431 /// 
+2024-09-16: Lompoc | predicted position: 16/58, points awarded: 0.724 /// 
+2024-09-26: Red Bluff | predicted position: 3/58, points awarded: 0.948 /// 
+2024-10-04: Mojave | predicted position: 0/58, points awarded: 1.0 /// 
+2024-11-06: Anderson | predicted position: 29/58, points awarded: 0.5 /// 
+predicted = 19.997/40 | random = 20.0/40 -> 0.015% decrease from random
+
+PERCENTILE-BASED
+top 10.0%: predicted = 3/40 | random = 4.0/40 -> 25.0% decrease from random
+top 20.0%: predicted = 4/40 | random = 8.0/40 -> 50.0% decrease from random
+top 25.0%: predicted = 7/40 | random = 10.0/40 -> 30.0% decrease from random
+top 33.3%: predicted = 15/40 | random = 13.333/40 -> 12.503% increase from random
+top 50.0%: predicted = 18/40 | random = 20.0/40 -> 10.0% decrease from random
