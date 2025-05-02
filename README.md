@@ -4,7 +4,7 @@
 
 ### Presentation
 
-A 10 minute presentation and explanation can be found [here](https://www.youtube.com/watch?v=tTCmliMi7tk).
+A 10 minute presentation and explanation can be found [here](https://youtu.be/QRuKtb8MCZk).
 
 ### Visualizations
 
@@ -94,6 +94,7 @@ To run a demo of the data visualization, feature engineering, and model creation
 - Folder names changed over the course of the project, but everything generally stayed the same. Previous queries were not always updated to 100% accurately reflect their new counterparts, but any discrepancies should be minimal and straightforward.
 
 *Personal Thoughts and Feelings*
-- I had a lot of fun with this project, even though there are areas I wish I could have improved and added more.
+- I had a lot of fun with this project, even though there are areas I wish I could have improved and added more (namely predicting fire intensity/acres_burned and duration, had I figured out how to actually predict outbreaks).
 - There is likely an alternative approach that is more optimal for this project, however I think my approach was interesting and fun to pursue even if it didn't achieve the best results.
+- It did not turn out the way I thought it would've at the beginning, but it was a pleasant suprise.
 - I admittedly put off progress for long periods of time which could have been used to make the end product better, but oh well.
